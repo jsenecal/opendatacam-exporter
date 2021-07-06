@@ -1,9 +1,9 @@
 ## https://binx.io/blog/2017/10/07/makefile-for-docker-images/
 
-REGISTRY_HOST=registry-mtl-gitlab.mgcorp.co
+REGISTRY_HOST=registry.hub.docker.com
 USERNAME=$(USER)
 NAME=$(shell basename $(CURDIR))
-REGISTRY_PROJECT=mg/eng/corpit/networking
+REGISTRY_PROJECT=jsenecal
 RELEASE_SCRIPT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release.sh
 IMAGE=$(REGISTRY_HOST)/$(REGISTRY_PROJECT)/$(NAME)
 
