@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "opendatacam_exporter"
+version = "0.1.0"
+description = ""
+authors = ["Jonathan Senecal <contact@jonathansenecal.com>"]
+license = "GNU GPLv3"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.65.1"
+uvicorn = "^0.14.0"
+prometheus-fastapi-instrumentator = "^5.7.1"
+aiohttp = {extras = ["speedups"], version = "^3.7.4"}
+cchardet = "^2.1.7"
+aiodns = "^3.0.0"
+httpx = "^0.18.1"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.8.3"
+black = "^21.5b2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
