@@ -1,11 +1,10 @@
 ## https://binx.io/blog/2017/10/07/makefile-for-docker-images/
 
-REGISTRY_HOST=registry.hub.docker.com
 USERNAME=$(USER)
 NAME=$(shell basename $(CURDIR))
 REGISTRY_PROJECT=jsenecal
 RELEASE_SCRIPT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release.sh
-IMAGE=$(REGISTRY_HOST)/$(REGISTRY_PROJECT)/$(NAME)
+IMAGE=$(REGISTRY_PROJECT)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SCRIPT) ; getVersion)
 MAJORVERSION=$(shell . $(RELEASE_SCRIPT) ; getMajorVersion)

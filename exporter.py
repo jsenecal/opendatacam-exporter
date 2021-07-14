@@ -1,4 +1,5 @@
 import asyncio
+import time
 from enum import Enum
 from typing import Callable
 
@@ -8,10 +9,10 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseSettings
 
 from metrics import (
-    opendatacam_current_fps_gauge,
-    opendatacam_recording_elapsed_seconds_gauge,
     opendatacam_counter_total_items_counter,
-    opendatacam_recording_counter_data_gauge
+    opendatacam_current_fps_gauge,
+    opendatacam_recording_counter_data_gauge,
+    opendatacam_recording_elapsed_seconds_gauge,
 )
 from utils import elapsed_seconds_from_strings
 
@@ -25,6 +26,7 @@ class Settings(BaseSettings):
     site_name: str = "default"
     fqdn: str = "opendatacam"
     port: int = 8080
+    min_interval: int = 3600
     protocol: ProtocolEnum = ProtocolEnum.http
 
 
@@ -34,6 +36,7 @@ class OpenDataCamAPI:
         self.fqdn = settings.fqdn
         self.protocol = settings.protocol
         self.port = settings.port
+        self.last_ts = int(time.time())
         self._config = None
         self._current_recording_id = None
         self._total_items = 0
@@ -162,7 +165,9 @@ class OpenDataCamAPI:
 
     async def delete_recordings(self):
         async with httpx.AsyncClient() as client:
-            recordings_data = await client.get(f"{self.url}/recordings", params={'offset': '2'})
+            recordings_data = await client.get(
+                f"{self.url}/recordings", params={"offset": "2"}
+            )
             recordings = recordings_data.json().get("recordings", dict())
             for recording in recordings:
                 recording_id = recording["_id"]
@@ -184,7 +189,9 @@ class OpenDataCamAPI:
         self._total_items = total_items
 
         # restart recording
-        await self.restart_recording()
+        if int(time.time()) - self.last_ts > self.config.min_interval:
+            await self.restart_recording()
+        self.last_ts = time.time()
 
         # get elasped seconds from the previously completed recording
         elapsed_seconds = await self.elapsed_seconds
