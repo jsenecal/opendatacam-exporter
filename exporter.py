@@ -160,7 +160,7 @@ class OpenDataCamAPI:
         recording_status = await self.recording_status
         async with httpx.AsyncClient() as client:
             self._current_recording_id = recording_status.get("recordingId")
-            if recording_status["isRecording"]:
+            if recording_status["isRecording"] and int(time.time()) - self.last_ts > self.min_interval:
                 await client.get(f"{self.url}/recording/stop")
             await client.get(f"{self.url}/recording/start")
 
@@ -190,8 +190,7 @@ class OpenDataCamAPI:
         self._total_items = total_items
 
         # restart recording
-        if int(time.time()) - self.last_ts > self.min_interval:
-            await self.restart_recording()
+        await self.restart_recording()
         self.last_ts = time.time()
 
         # get elasped seconds from the previously completed recording
