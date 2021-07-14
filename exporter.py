@@ -35,6 +35,7 @@ class OpenDataCamAPI:
         self.site_name = settings.site_name
         self.fqdn = settings.fqdn
         self.protocol = settings.protocol
+        self.min_interval = settings.min_interval
         self.port = settings.port
         self.last_ts = int(time.time())
         self._config = None
@@ -189,7 +190,7 @@ class OpenDataCamAPI:
         self._total_items = total_items
 
         # restart recording
-        if int(time.time()) - self.last_ts > self.config.min_interval:
+        if int(time.time()) - self.last_ts > self.min_interval:
             await self.restart_recording()
         self.last_ts = time.time()
 
