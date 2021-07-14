@@ -243,5 +243,5 @@ async def refresh_metrics(request: Request, call_next: Callable):
 
 
 instrumentator = Instrumentator()
-instrumentator.instrument(app)
+# instrumentator.instrument(app)
 instrumentator.expose(app, should_gzip=True)
